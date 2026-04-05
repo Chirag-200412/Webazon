@@ -2,39 +2,56 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Webazon</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Webazon | Your Online Store</title>
     <style>
       :root {
         --amz-dark: #131921;
+        --amz-navy: #232f3e;
         --amz-orange: #f08804;
         --bg: #eaeded;
-      }
-      body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        background: var(--bg);
+        --paytm-blue: #00baf2;
       }
 
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        margin: 0;
+        background: var(--bg);
+        color: #111;
+      }
+
+      /* Navigation Bar */
       nav {
         background: var(--amz-dark);
         color: white;
-        padding: 12px 30px;
+        padding: 10px 30px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      }
+      nav b {
+        font-size: 28px;
+        cursor: pointer;
+        color: white;
+        text-decoration: none;
       }
       .nav-input {
-        padding: 8px;
+        padding: 10px;
         border-radius: 4px;
         border: none;
-        margin-right: 5px;
-        width: 180px;
+        margin-right: 8px;
+        width: 200px;
+        outline: none;
       }
 
+      /* Main Content Grid */
       .main-content {
         display: flex;
-        max-width: 1300px;
+        max-width: 1400px;
         margin: 20px auto;
         gap: 20px;
         padding: 0 20px;
@@ -42,84 +59,107 @@
       #product-grid {
         flex: 3;
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
         gap: 20px;
       }
 
+      /* Product Cards */
       .card {
         background: white;
         padding: 20px;
         border-radius: 8px;
         text-align: center;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        transition: 0.2s;
+        transition: 0.3s;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
       }
       .card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
       }
       .card img {
         width: 100%;
-        height: 160px;
+        height: 180px;
         object-fit: contain;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
+      }
+      .card h4 {
+        margin: 10px 0;
+        font-size: 18px;
+        color: #007185;
+        height: 45px;
+        overflow: hidden;
       }
       .card .price {
         color: #b12704;
-        font-size: 20px;
+        font-size: 22px;
         font-weight: bold;
-        margin: 10px 0;
+        margin-bottom: 15px;
       }
 
+      /* Shopping Cart Panel */
       #cart-panel {
         flex: 1;
         background: white;
-        padding: 20px;
+        padding: 25px;
         border-radius: 8px;
         height: fit-content;
         position: sticky;
-        top: 20px;
+        top: 80px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       }
       .cart-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 8px 0;
+        padding: 10px 0;
         border-bottom: 1px solid #eee;
         font-size: 14px;
       }
+      .cart-remove {
+        color: #c40000;
+        cursor: pointer;
+        font-weight: bold;
+        text-decoration: none;
+      }
 
+      /* Admin Dashboard UI */
       .admin-box {
         background: #fff3cd;
-        padding: 25px;
+        padding: 30px;
         margin: 20px auto;
-        max-width: 1200px;
+        max-width: 1300px;
         border-radius: 8px;
         display: none;
         border: 1px solid #ffeeba;
+        text-align: center;
       }
       .admin-box input {
-        padding: 10px;
+        padding: 12px;
         margin: 5px;
-        width: 250px;
         border-radius: 4px;
         border: 1px solid #ccc;
+        width: 250px;
       }
 
+      /* Buttons Styles */
       button {
         cursor: pointer;
-        border-radius: 5px;
+        border-radius: 6px;
         border: 1px solid #a88734;
-        padding: 10px;
+        padding: 12px;
         transition: 0.2s;
+        font-size: 14px;
       }
       .btn-add {
         background: linear-gradient(to bottom, #f7dfa1, #f0c14b);
         width: 100%;
+        font-weight: bold;
+      }
+      .btn-add:hover {
+        background: #f7ca00;
       }
       .btn-buy {
         background: var(--amz-orange);
@@ -127,24 +167,85 @@
         color: white;
         font-weight: bold;
         border: none;
-        margin-top: 15px;
+        margin-top: 20px;
+        font-size: 16px;
+      }
+      .btn-buy:hover {
+        background: #e47911;
       }
       .btn-del {
         background: #cc0000;
         color: white;
         width: 100%;
         border: none;
-        margin-top: 8px;
+        margin-top: 10px;
+        font-weight: bold;
+      }
+
+      /* Payment Modal */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(5px);
+      }
+      .modal-content {
+        background: white;
+        margin: 5% auto;
+        padding: 40px;
+        width: 400px;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      }
+      .pay-option {
+        border: 2px solid #ddd;
+        padding: 15px;
+        margin: 10px 0;
+        cursor: pointer;
+        border-radius: 8px;
+        font-weight: bold;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+      .pay-option:hover {
+        border-color: var(--amz-orange);
+        background: #fffaf5;
+      }
+
+      /* Scrollable QR Verification Box */
+      .verification-scroll {
+        display: none;
+        max-height: 280px;
+        overflow-y: auto;
+        background: #f0faff;
+        border: 2px dashed var(--paytm-blue);
+        padding: 15px;
+        border-radius: 8px;
+        margin: 20px 0;
+      }
+      .verification-scroll::-webkit-scrollbar {
+        width: 6px;
+      }
+      .verification-scroll::-webkit-scrollbar-thumb {
+        background: var(--paytm-blue);
+        border-radius: 10px;
       }
     </style>
   </head>
   <body>
     <nav>
-      <b onclick="location.reload()" style="font-size: 24px; cursor: pointer"
-        >Webazon</b
-      >
-      <div id="auth-container">
-        <div id="auth-fields">
+      <b onclick="location.reload()">Webazon</b>
+      <div id="auth-section">
+        <div id="login-fields">
           <input
             type="email"
             id="email"
@@ -160,31 +261,33 @@
           <button
             id="auth-btn"
             onclick="handleAuth()"
-            style="background: var(--amz-orange); border: none; color: white"
+            style="
+              background: var(--amz-orange);
+              border: none;
+              color: white;
+              font-weight: bold;
+            "
           >
             Sign In
           </button>
-          <div style="font-size: 11px; margin-top: 5px">
-            <span id="auth-msg">New?</span>
+          <div style="font-size: 12px; margin-top: 8px; text-align: right">
+            <span id="auth-msg">New to Webazon?</span>
             <a
-              href="#"
-              id="auth-toggle"
+              href="javascript:void(0)"
               onclick="toggleAuth()"
-              style="color: #6fb1fc; text-decoration: none"
+              style="color: #6fb1fc; text-decoration: none; font-weight: bold"
               >Start here.</a
             >
           </div>
         </div>
-        <div id="user-info" style="display: none">
-          <span id="user-name"></span>
+        <div id="user-display-box" style="display: none">
+          <span
+            id="user-name"
+            style="font-weight: bold; margin-right: 15px"
+          ></span>
           <button
             onclick="logout()"
-            style="
-              background: #eee;
-              margin-left: 10px;
-              border-color: #ccc;
-              color: #111;
-            "
+            style="background: #eee; border-color: #ccc; padding: 6px 12px"
           >
             Logout
           </button>
@@ -193,13 +296,18 @@
     </nav>
 
     <div id="admin-panel" class="admin-box">
-      <h3>Admin Tools: Add Inventory</h3>
-      <input type="text" id="p-name" placeholder="Name" />
-      <input type="number" id="p-price" placeholder="Price" />
-      <input type="text" id="p-img" placeholder="Image URL" />
+      <h3>Admin Dashboard: Manage Store Inventory</h3>
+      <input type="text" id="p-name" placeholder="Product Name" />
+      <input type="number" id="p-price" placeholder="Price ($)" />
+      <input type="text" id="p-img" placeholder="Image URL (Link)" />
       <button
         onclick="addProduct()"
-        style="background: #28a745; color: white; border: none"
+        style="
+          background: #28a745;
+          color: white;
+          border: none;
+          font-weight: bold;
+        "
       >
         Add Product
       </button>
@@ -207,30 +315,147 @@
 
     <div class="main-content">
       <div id="product-grid"></div>
+
       <div id="cart-panel">
-        <h3>Cart</h3>
-        <div id="cart-list">Empty</div>
-        <hr />
+        <h3 style="margin-top: 0">Shopping Cart</h3>
+        <div id="cart-items">Your cart is empty.</div>
+        <hr style="margin: 20px 0" />
         <div
           style="
             display: flex;
             justify-content: space-between;
             font-weight: bold;
+            font-size: 22px;
           "
         >
-          <span>Total:</span><span>$<span id="total-val">0</span></span>
+          <span>Total:</span>
+          <span>$<span id="total-val">0</span></span>
         </div>
-        <button class="btn-buy" onclick="checkout()">Proceed to buy</button>
+        <button class="btn-buy" onclick="openCheckout()">
+          Proceed to Checkout
+        </button>
+      </div>
+    </div>
+
+    <div id="pay-modal" class="modal">
+      <div class="modal-content">
+        <h2 style="margin-top: 0">Secure Payment</h2>
+        <p>
+          Total Amount: <strong>$<span id="modal-total">0</span></strong>
+        </p>
+
+        <div style="display: flex; gap: 10px">
+          <div
+            class="pay-option"
+            id="opt-Paytm"
+            onclick="selectMethod('Paytm')"
+            style="flex: 1"
+          >
+            <img
+              src="https://tse1.mm.bing.net/th/id/OIP.RMtJCj1-GxE59K9kJtg6FQHaD8?pid=Api&P=0&h=220"
+              width="65"
+            />
+          </div>
+          <div
+            class="pay-option"
+            id="opt-COD"
+            onclick="selectMethod('Cash on Delivery')"
+            style="flex: 1"
+          >
+            💵 COD
+          </div>
+        </div>
+
+        <div id="verification-box" class="verification-scroll">
+          <p style="font-weight: bold; color: var(--paytm-blue); margin-top: 0">
+            1. Scan to Pay
+          </p>
+          <img
+            src="Paytm QR.jpeg"
+            width="220"
+            style="margin-bottom: 10px; border: 2px solid white"
+          />
+
+          <p style="font-weight: bold; color: var(--paytm-blue)">
+            2. Enter Transaction ID
+          </p>
+          <input
+            type="text"
+            id="paytm-tid"
+            placeholder="12-digit Order ID"
+            style="
+              width: 90%;
+              padding: 10px;
+              border: 1px solid var(--paytm-blue);
+              border-radius: 4px;
+              text-align: center;
+            "
+          />
+          <p style="font-size: 11px; color: #666; margin-top: 10px">
+            Confirm payment before clicking Verify.
+          </p>
+        </div>
+
+        <button
+          id="final-btn"
+          onclick="finalizeOrder()"
+          style="
+            display: none;
+            width: 100%;
+            background: var(--amz-orange);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 15px;
+            border-radius: 8px;
+          "
+        >
+          Verify & Place Order
+        </button>
+
+        <button
+          onclick="closeModal()"
+          style="
+            margin-top: 20px;
+            background: none;
+            border: none;
+            color: #007185;
+            text-decoration: underline;
+          "
+        >
+          Cancel
+        </button>
       </div>
     </div>
 
     <script>
-      // Initialize session from LocalStorage
-      let cart = JSON.parse(localStorage.getItem("amz_cart")) || [];
-      let currentUser = JSON.parse(localStorage.getItem("amz_user")) || null;
+      // --- APP DATA ---
+      let cart = JSON.parse(localStorage.getItem("w_cart")) || [];
+      let user = JSON.parse(localStorage.getItem("w_user")) || null;
       let isRegisterMode = false;
+      let currentMethod = "";
 
-      // --- UI CONTROLS ---
+      // --- INITIALIZATION ---
+      function initUI() {
+        if (user) {
+          document.getElementById("login-fields").style.display = "none";
+          document.getElementById("user-display-box").style.display = "block";
+          document.getElementById("user-name").innerText =
+            "Hello, " + user.email;
+          document.getElementById("admin-panel").style.display =
+            user.role === "admin" ? "block" : "none";
+        } else {
+          document.getElementById("login-fields").style.display = "block";
+          document.getElementById("user-display-box").style.display = "none";
+          document.getElementById("admin-panel").style.display = "none";
+        }
+        renderCart();
+        fetchProducts();
+      }
+
+      // --- AUTHENTICATION ---
       function toggleAuth() {
         isRegisterMode = !isRegisterMode;
         document.getElementById("auth-btn").innerText = isRegisterMode
@@ -242,72 +467,44 @@
         document.getElementById("auth-toggle").innerText = isRegisterMode
           ? "Sign in instead"
           : "Start here.";
-        document.getElementById("auth-msg").innerText = isRegisterMode
-          ? "Already a member?"
-          : "New customer?";
-      }
-
-      function updateUI() {
-        if (currentUser) {
-          document.getElementById("auth-fields").style.display = "none";
-          document.getElementById("user-info").style.display = "block";
-          document.getElementById("user-name").innerText =
-            "Hello, " + currentUser.email;
-          document.getElementById("admin-panel").style.display =
-            currentUser.role === "admin" ? "block" : "none";
-        } else {
-          document.getElementById("auth-fields").style.display = "block";
-          document.getElementById("user-info").style.display = "none";
-          document.getElementById("admin-panel").style.display = "none";
-        }
-        renderCart();
-        fetchProducts();
-      }
-
-      // --- DB SYNC & CORE ---
-      async function syncCart() {
-        if (currentUser)
-          await fetch("http://127.0.0.1:5000/api/sync-cart", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: currentUser.email, cart: cart }),
-          });
       }
 
       async function handleAuth() {
         const email = document.getElementById("email").value;
         const password = document.getElementById("pass").value;
-        if (!email || !password) return alert("Missing info");
-
         const route = isRegisterMode ? "/register" : "/login";
-        const res = await fetch("http://127.0.0.1:5000" + route, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password, role: "customer" }),
-        });
-        const data = await res.json();
 
-        if (res.ok) {
-          if (isRegisterMode) {
-            alert(data.msg);
-            toggleAuth();
-          } else {
-            currentUser = data;
-            cart = data.cart || []; // Load cart from DB
-            localStorage.setItem("amz_user", JSON.stringify(data));
-            updateUI();
-          }
-        } else alert(data.msg);
+        try {
+          const res = await fetch("http://127.0.0.1:5000" + route, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password, role: "customer" }),
+          });
+          const data = await res.json();
+          if (res.ok) {
+            if (isRegisterMode) {
+              alert(data.msg);
+              toggleAuth();
+            } else {
+              user = data;
+              cart = data.cart || [];
+              localStorage.setItem("w_user", JSON.stringify(data));
+              initUI();
+            }
+          } else alert(data.msg);
+        } catch (e) {
+          alert("Backend is offline!");
+        }
       }
 
       function logout() {
-        currentUser = null;
+        user = null;
         cart = [];
         localStorage.clear();
-        updateUI();
+        initUI();
       }
 
-      // --- PRODUCTS ---
+      // --- STORE CORE ---
       async function fetchProducts() {
         const res = await fetch("http://127.0.0.1:5000/api/products");
         const products = await res.json();
@@ -315,95 +512,144 @@
           .map(
             (p) => `
             <div class="card">
-                <img src="${p.image_url || "https://via.placeholder.com/150"}" alt="img">
-                <h4>${p.name}</h4>
-                <div class="price">$${p.price}</div>
+                <img src="${p.image_url || "https://via.placeholder.com/180"}">
+                <h4>${p.name}</h4><div class="price">$${p.price}</div>
                 <button class="btn-add" onclick="addToCart('${p.name}', ${p.price})">Add to Cart</button>
-                ${currentUser && currentUser.role === "admin" ? `<button class="btn-del" onclick="deleteProd('${p.name}')">Delete from Store</button>` : ""}
-            </div>
-        `,
+                ${user && user.role === "admin" ? `<button class="btn-del" onclick="deleteProd('${p.name}')">Delete</button>` : ""}
+            </div>`,
           )
           .join("");
       }
 
-      async function addProduct() {
-        const name = document.getElementById("p-name").value;
-        const price = document.getElementById("p-price").value;
-        const image_url = document.getElementById("p-img").value;
-        await fetch("http://127.0.0.1:5000/api/products", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name,
-            price,
-            image_url,
-            role: currentUser.role,
-          }),
-        });
-        fetchProducts();
-      }
-
-      async function deleteProd(name) {
-        if (!confirm("Remove from site?")) return;
-        await fetch("http://127.0.0.1:5000/api/delete-product", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, role: currentUser.role }),
-        });
-        fetchProducts();
-      }
-
-      // --- CART ---
       function addToCart(name, price) {
         cart.push({ name, price });
         renderCart();
-        syncCart();
+        sync();
       }
-
-      function removeCartItem(i) {
+      function removeCart(i) {
         cart.splice(i, 1);
         renderCart();
-        syncCart();
+        sync();
+      }
+      async function sync() {
+        if (user)
+          await fetch("http://127.0.0.1:5000/api/sync-cart", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: user.email, cart: cart }),
+          });
       }
 
       function renderCart() {
-        localStorage.setItem("amz_cart", JSON.stringify(cart));
-        const list = document.getElementById("cart-list");
-        if (cart.length === 0) {
-          list.innerHTML = "Empty";
+        localStorage.setItem("w_cart", JSON.stringify(cart));
+        const list = document.getElementById("cart-items");
+        if (!cart.length) {
+          list.innerHTML = "Your cart is empty.";
           document.getElementById("total-val").innerText = "0";
           return;
         }
         list.innerHTML = cart
           .map(
             (item, i) =>
-              `<div class="cart-row"><span>${item.name}</span><span>$${item.price} <a href="#" onclick="removeCartItem(${i})" style="color:red; text-decoration:none;">(X)</a></span></div>`,
+              `<div class="cart-row"><span>${item.name}</span><span>$${item.price} <a class="cart-remove" onclick="removeCart(${i})">X</a></span></div>`,
           )
           .join("");
         document.getElementById("total-val").innerText = cart.reduce(
-          (sum, item) => sum + item.price,
+          (s, i) => s + i.price,
           0,
         );
       }
 
-      async function checkout() {
-        if (!currentUser || currentUser.role === "admin")
-          return alert("Log in as customer to buy!");
+      // --- ADMIN TOOLS ---
+      async function addProduct() {
+        await fetch("http://127.0.0.1:5000/api/products", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: document.getElementById("p-name").value,
+            price: document.getElementById("p-price").value,
+            image_url: document.getElementById("p-img").value,
+            role: user.role,
+          }),
+        });
+        fetchProducts();
+      }
+      async function deleteProd(name) {
+        if (confirm("Delete permanently?")) {
+          await fetch("http://127.0.0.1:5000/api/delete-product", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, role: user.role }),
+          });
+          fetchProducts();
+        }
+      }
+
+      // --- CHECKOUT LOGIC ---
+      function openCheckout() {
+        if (!user || user.role === "admin")
+          return alert("Sign in as customer!");
+        if (!cart.length) return alert("Cart is empty!");
+        document.getElementById("modal-total").innerText =
+          document.getElementById("total-val").innerText;
+        document.getElementById("pay-modal").style.display = "block";
+      }
+
+      function closeModal() {
+        document.getElementById("pay-modal").style.display = "none";
+        document.getElementById("verification-box").style.display = "none";
+        document.getElementById("final-btn").style.display = "none";
+        document
+          .querySelectorAll(".pay-option")
+          .forEach((e) => (e.style.borderColor = "#ddd"));
+      }
+
+      function selectMethod(m) {
+        currentMethod = m;
+        document
+          .querySelectorAll(".pay-option")
+          .forEach((e) => (e.style.borderColor = "#ddd"));
+        document.getElementById(
+          "opt-" + (m === "Paytm" ? "Paytm" : "COD"),
+        ).style.borderColor = "#f08804";
+        document.getElementById("verification-box").style.display =
+          m === "Paytm" ? "block" : "none";
+        document.getElementById("final-btn").style.display = "block";
+        document.getElementById("final-btn").innerText =
+          "Confirm Order via " + m;
+      }
+
+      async function finalizeOrder() {
+        let tid = "N/A (Cash on Delivery)";
+        if (currentMethod === "Paytm") {
+          tid = document.getElementById("paytm-tid").value.trim();
+          if (tid.length < 5)
+            return alert("Transaction ID is required for Paytm!");
+        }
+
         const res = await fetch("http://127.0.0.1:5000/api/checkout", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            email: currentUser.email,
+            email: user.email,
             items: cart.map((i) => i.name).join(", "),
             total: document.getElementById("total-val").innerText,
+            payment_method: currentMethod,
+            transaction_id: tid,
           }),
         });
-        alert("Order Placed checkout your mail for further information!");
-        cart = [];
-        renderCart();
+        if (res.ok) {
+          alert("Order Successful! Receipt sent to " + user.email);
+          cart = [];
+          renderCart();
+          closeModal();
+        } else {
+          alert("Failed to place order.");
+        }
       }
 
-      updateUI();
+      // Run on Load
+      initUI();
     </script>
   </body>
 </html>
