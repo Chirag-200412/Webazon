@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Webazon</title>
+    <style>
+      :root {
+        --amz-dark: #131921;
+        --amz-orange: #f08804;
+        --bg: #eaeded;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background: var(--bg);
+      }
+
+      nav {
+        background: var(--amz-dark);
+        color: white;
+        padding: 12px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      }
+      .nav-input {
+        padding: 8px;
+        border-radius: 4px;
+        border: none;
+        margin-right: 5px;
+        width: 180px;
+      }
+
+      .main-content {
+        display: flex;
+        max-width: 1300px;
+        margin: 20px auto;
+        gap: 20px;
+        padding: 0 20px;
+      }
+      #product-grid {
+        flex: 3;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 20px;
+      }
+
+      .card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: 0.2s;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+      .card img {
+        width: 100%;
+        height: 160px;
+        object-fit: contain;
+        margin-bottom: 10px;
+      }
+      .card .price {
+        color: #b12704;
+        font-size: 20px;
+        font-weight: bold;
+        margin: 10px 0;
+      }
+
+      #cart-panel {
+        flex: 1;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        height: fit-content;
+        position: sticky;
+        top: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      .cart-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+        font-size: 14px;
+      }
+
+      .admin-box {
+        background: #fff3cd;
+        padding: 25px;
+        margin: 20px auto;
+        max-width: 1200px;
+        border-radius: 8px;
+        display: none;
+        border: 1px solid #ffeeba;
+      }
+      .admin-box input {
+        padding: 10px;
+        margin: 5px;
+        width: 250px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+
+      button {
+        cursor: pointer;
+        border-radius: 5px;
+        border: 1px solid #a88734;
+        padding: 10px;
+        transition: 0.2s;
+      }
+      .btn-add {
+        background: linear-gradient(to bottom, #f7dfa1, #f0c14b);
+        width: 100%;
+      }
+      .btn-buy {
+        background: var(--amz-orange);
+        width: 100%;
+        color: white;
+        font-weight: bold;
+        border: none;
+        margin-top: 15px;
+      }
+      .btn-del {
+        background: #cc0000;
+        color: white;
+        width: 100%;
+        border: none;
+        margin-top: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <b onclick="location.reload()" style="font-size: 24px; cursor: pointer"
+        >Webazon</b
+      >
+      <div id="auth-container">
+        <div id="auth-fields">
+          <input
+            type="email"
+            id="email"
+            class="nav-input"
+            placeholder="Email"
+          />
+          <input
+            type="password"
+            id="pass"
+            class="nav-input"
+            placeholder="Password"
+          />
+          <button
+            id="auth-btn"
+            onclick="handleAuth()"
+            style="background: var(--amz-orange); border: none; color: white"
+          >
+            Sign In
+          </button>
+          <div style="font-size: 11px; margin-top: 5px">
+            <span id="auth-msg">New?</span>
+            <a
+              href="#"
+              id="auth-toggle"
+              onclick="toggleAuth()"
+              style="color: #6fb1fc; text-decoration: none"
+              >Start here.</a
+            >
+          </div>
+        </div>
+        <div id="user-info" style="display: none">
+          <span id="user-name"></span>
+          <button
+            onclick="logout()"
+            style="
+              background: #eee;
+              margin-left: 10px;
+              border-color: #ccc;
+              color: #111;
+            "
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <div id="admin-panel" class="admin-box">
+      <h3>Admin Tools: Add Inventory</h3>
+      <input type="text" id="p-name" placeholder="Name" />
+      <input type="number" id="p-price" placeholder="Price" />
+      <input type="text" id="p-img" placeholder="Image URL" />
+      <button
+        onclick="addProduct()"
+        style="background: #28a745; color: white; border: none"
+      >
+        Add Product
+      </button>
+    </div>
+
+    <div class="main-content">
+      <div id="product-grid"></div>
+      <div id="cart-panel">
+        <h3>Cart</h3>
+        <div id="cart-list">Empty</div>
+        <hr />
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+          "
+        >
+          <span>Total:</span><span>$<span id="total-val">0</span></span>
+        </div>
+        <button class="btn-buy" onclick="checkout()">Proceed to buy</button>
+      </div>
+    </div>
+
+    <script>
+      // Initialize session from LocalStorage
+      let cart = JSON.parse(localStorage.getItem("amz_cart")) || [];
+      let currentUser = JSON.parse(localStorage.getItem("amz_user")) || null;
+      let isRegisterMode = false;
+
+      // --- UI CONTROLS ---
+      function toggleAuth() {
+        isRegisterMode = !isRegisterMode;
+        document.getElementById("auth-btn").innerText = isRegisterMode
+          ? "Create Account"
+          : "Sign In";
+        document.getElementById("auth-btn").style.background = isRegisterMode
+          ? "#28a745"
+          : "var(--amz-orange)";
+        document.getElementById("auth-toggle").innerText = isRegisterMode
+          ? "Sign in instead"
+          : "Start here.";
+        document.getElementById("auth-msg").innerText = isRegisterMode
+          ? "Already a member?"
+          : "New customer?";
+      }
+
+      function updateUI() {
+        if (currentUser) {
+          document.getElementById("auth-fields").style.display = "none";
+          document.getElementById("user-info").style.display = "block";
+          document.getElementById("user-name").innerText =
+            "Hello, " + currentUser.email;
+          document.getElementById("admin-panel").style.display =
+            currentUser.role === "admin" ? "block" : "none";
+        } else {
+          document.getElementById("auth-fields").style.display = "block";
+          document.getElementById("user-info").style.display = "none";
+          document.getElementById("admin-panel").style.display = "none";
+        }
+        renderCart();
+        fetchProducts();
+      }
+
+      // --- DB SYNC & CORE ---
+      async function syncCart() {
+        if (currentUser)
+          await fetch("http://127.0.0.1:5000/api/sync-cart", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: currentUser.email, cart: cart }),
+          });
+      }
+
+      async function handleAuth() {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("pass").value;
+        if (!email || !password) return alert("Missing info");
+
+        const route = isRegisterMode ? "/register" : "/login";
+        const res = await fetch("http://127.0.0.1:5000" + route, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password, role: "customer" }),
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          if (isRegisterMode) {
+            alert(data.msg);
+            toggleAuth();
+          } else {
+            currentUser = data;
+            cart = data.cart || []; // Load cart from DB
+            localStorage.setItem("amz_user", JSON.stringify(data));
+            updateUI();
+          }
+        } else alert(data.msg);
+      }
+
+      function logout() {
+        currentUser = null;
+        cart = [];
+        localStorage.clear();
+        updateUI();
+      }
+
+      // --- PRODUCTS ---
+      async function fetchProducts() {
+        const res = await fetch("http://127.0.0.1:5000/api/products");
+        const products = await res.json();
+        document.getElementById("product-grid").innerHTML = products
+          .map(
+            (p) => `
+            <div class="card">
+                <img src="${p.image_url || "https://via.placeholder.com/150"}" alt="img">
+                <h4>${p.name}</h4>
+                <div class="price">$${p.price}</div>
+                <button class="btn-add" onclick="addToCart('${p.name}', ${p.price})">Add to Cart</button>
+                ${currentUser && currentUser.role === "admin" ? `<button class="btn-del" onclick="deleteProd('${p.name}')">Delete from Store</button>` : ""}
+            </div>
+        `,
+          )
+          .join("");
+      }
+
+      async function addProduct() {
+        const name = document.getElementById("p-name").value;
+        const price = document.getElementById("p-price").value;
+        const image_url = document.getElementById("p-img").value;
+        await fetch("http://127.0.0.1:5000/api/products", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name,
+            price,
+            image_url,
+            role: currentUser.role,
+          }),
+        });
+        fetchProducts();
+      }
+
+      async function deleteProd(name) {
+        if (!confirm("Remove from site?")) return;
+        await fetch("http://127.0.0.1:5000/api/delete-product", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, role: currentUser.role }),
+        });
+        fetchProducts();
+      }
+
+      // --- CART ---
+      function addToCart(name, price) {
+        cart.push({ name, price });
+        renderCart();
+        syncCart();
+      }
+
+      function removeCartItem(i) {
+        cart.splice(i, 1);
+        renderCart();
+        syncCart();
+      }
+
+      function renderCart() {
+        localStorage.setItem("amz_cart", JSON.stringify(cart));
+        const list = document.getElementById("cart-list");
+        if (cart.length === 0) {
+          list.innerHTML = "Empty";
+          document.getElementById("total-val").innerText = "0";
+          return;
+        }
+        list.innerHTML = cart
+          .map(
+            (item, i) =>
+              `<div class="cart-row"><span>${item.name}</span><span>$${item.price} <a href="#" onclick="removeCartItem(${i})" style="color:red; text-decoration:none;">(X)</a></span></div>`,
+          )
+          .join("");
+        document.getElementById("total-val").innerText = cart.reduce(
+          (sum, item) => sum + item.price,
+          0,
+        );
+      }
+
+      async function checkout() {
+        if (!currentUser || currentUser.role === "admin")
+          return alert("Log in as customer to buy!");
+        const res = await fetch("http://127.0.0.1:5000/api/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: currentUser.email,
+            items: cart.map((i) => i.name).join(", "),
+            total: document.getElementById("total-val").innerText,
+          }),
+        });
+        alert("Order Placed checkout your mail for further information!");
+        cart = [];
+        renderCart();
+      }
+
+      updateUI();
+    </script>
+  </body>
+</html>
